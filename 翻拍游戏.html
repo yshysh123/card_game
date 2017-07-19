@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			body,ul,li{
+				margin: 0;
+				padding: 0;
+			}
+			img{
+				display: block;
+				border: 0;
+				height: 200px;
+				width:135px;
+				transition: 2s;
+			}
+			ul,li{
+				list-style:none;
+			}
+			ul{
+				height: 600px;
+				width:1170px;
+				margin: 0 auto;
+				margin-top: 50px;
+				position: relative;
+			}
+			li{
+				position: absolute;
+				left: 0;
+				top:0;
+				height: 200px;
+				width:135px;
+				background: url(images/卡背1.jpg) no-repeat;
+				background-size: 100% 100%;
+				transition: 2s;
+			}
+		</style>
+	</head>
+	<body>
+		<input type="button" value="开始游戏" id="btn1"/>
+		<div>
+			<div>
+				<ul>
+				</ul>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var btn1 = document.getElementById('btn1');
+			var lis = document.getElementsByTagName('li');
+			var imgs = document.getElementsByTagName('img');
+			var ul = document.getElementsByTagName('ul')[0];
+			var num = 0;
+			var num2 = 1;
+			var num3 = 0;
+			var arrImg = [];
+			var arrNum = [];
+			var arrran = [];
+			var timer = null;
+			var onf = 0;
+			btn1.onclick = function(){
+				arrran = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
+				ul.innerHTML = '';
+				arrran.sort(function(a,b){
+					return Math.round(Math.random()*24);
+				});
+				for(var i=0;i<24;i++){
+					ul.innerHTML += '<li></li>';
+					lis[i].style.left = (arrran[i]%8)*140 + 'px';
+					lis[i].style.top = parseInt(arrran[i]/8)*205 + 'px';
+				}
+				for(var i=0;i<24;i++){
+					lis[i].innerHTML = '<img src="game_images/card'+ num2 +'.png">';
+					num2++;
+					if(num2==13){
+						num2=1;
+					}
+				}
+				for(var i=0;i<imgs.length;i++){
+					imgs[i].style.display = 'none';
+				}
+				for(var i=0;i<lis.length;i++){
+					clearInterval(timer);
+					lis[i].index = i;
+					lis[i].onclick = function(){
+						onf++;
+						if(onf===3){
+							return;
+						}
+						num3++;
+						num = this.index;
+						imgs[num].style.display = 'block';
+						lis[num].style.backgroundImage = 'none';
+						arrImg.push(imgs[num].src);
+						arrNum.push(num);	
+						if(num3==2){
+							clearInterval(timer);
+							if(arrNum[0]===arrNum[1]){
+								imgs[arrNum[0]].style.display = 'none';
+								lis[arrNum[0]].style.background = 'url(images/卡背1.jpg) no-repeat';
+								lis[arrNum[0]].style.backgroundSize = '100% 100%';
+								num3 = 0;
+								arrImg = [];
+								arrNum = [];
+							}
+							else if(arrImg[0]===arrImg[1]){
+								imgs[arrNum[0]].style.display = 'none';
+								imgs[arrNum[1]].style.display = 'none';
+								lis[arrNum[0]].style.display = 'none';
+								lis[arrNum[1]].style.display = 'none';
+								num3 = 0;
+								arrImg = [];
+								arrNum = [];
+							}
+							else{
+								timer = setInterval(function(){
+									imgs[arrNum[0]].style.display = 'none';
+									imgs[arrNum[1]].style.display = 'none';
+									lis[arrNum[0]].style.background = 'url(images/卡背1.jpg) no-repeat';
+									lis[arrNum[0]].style.backgroundSize = '100% 100%';
+									lis[arrNum[1]].style.background = 'url(images/卡背1.jpg) no-repeat';
+									lis[arrNum[1]].style.backgroundSize = '100% 100%';
+									num3 = 0;
+									arrImg = [];
+									arrNum = [];
+									if(num3==0){
+										clearInterval(timer);
+										onf = 0;
+									}
+								},400)
+							}
+						}
+					}
+				}
+			}
+
+			function randomFn (first,end){
+				return Math.random()*(end-first)+first;
+			}
+		</script>
+	</body>
+</html>

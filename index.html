@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"> 
+		<title></title>
+		<script src="js/TweenMax.min.js"></script>
+		<script src="js/stratMovereng.js"></script>
+		<script src="js/shake.js"></script>
+		<style type="text/css">
+			body,input,p,h3,ul,li{
+				margin: 0;
+				padding: 0;
+			}
+			ul,li{
+				list-style: none;
+			}
+			body{
+				font-family: "微软雅黑";
+				overflow: hidden;
+			}
+			#box{
+				height: 750px;
+				width:100%;
+				position: relative;
+				margin: 0 auto;
+			}
+			#box ul li{
+				height: 18.75px;
+				width:100%;
+				background: url(images/bg.jpg) no-repeat;
+				background-size: 100%;
+			}
+			#box #button{
+				height: 100px;
+				width:950px;
+				position: absolute;
+				left:350px;
+				top:20px;
+			}
+			input{
+				margin-right: 25px;
+				height: 30px;
+				width:100px;
+				background: url(../../images/time3.jpg) no-repeat;
+				background-size: 100% 100%;
+				font-weight: 900;
+				color:orangered;
+				line-height: 20px;
+				float:left;
+			}
+			#card {
+				width:100%;
+				height: 650px;
+				position: absolute;
+				left: 0;
+				top: 100px;
+				z-index: 100;
+				
+			}
+			#box #card div{
+				position: absolute;
+				top: 250px;
+				left: 710px;
+				height: 150px;
+				width:100px;
+				background: url(images/卡背1.jpg) no-repeat;
+				background-size: 100% 100%;
+			}
+			#box #card p{
+				position: absolute;
+				top: 250px;
+				left: 710px;
+				height: 150px;
+				width:100px;
+				background: url(images/卡背2.jpg) no-repeat;
+				background-size: 100% 100%;
+			}
+			#box #card h3{
+				position: absolute;
+				top: 250px;
+				left: 710px;
+				height: 150px;
+				width:100px;
+				background: url(images/卡背3.jpg) no-repeat;
+				background-size: 100% 100%;
+			}
+			#box #card .active{
+				position: absolute;
+				top: 150px;
+				left: 550px;
+				height: 450px;
+				width:300px;
+				background-size: 100% 100%;
+				transform: rotateX(0deg) rotateY(0deg);
+				transition: 2s;
+				z-index: 100;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="box">
+			<ul id="bgul"></ul>
+			<div id="button">
+				<input type="button" value="发牌" id="btn1"/>
+				<input type="button" value="洗牌" id="btn2"/>
+				<input type="button" value="压缩" id="btn3"/>
+				<input type="button" value="分散" id="btn4"/>
+				<input type="button" value="聚合" id="btn5"/>
+				<input type="button" value="翻拍" id="btn6"/>
+				<input type="button" value="洗牌特效" id="btn7"/>
+				<input type="button" value="抽一包" id="btn8"/>
+				<input type="button" value="摆正" id="btn9"/>
+				<input type="button" value="旋转" id="btn10"/>
+				<input type="button" value="更换背景" id="btn11"/>
+				<input type="button" value="三百六十度" id="btn12"/>
+				<input type="button" value="负三百六" id="btn13"/>
+				<input type="button" value="动画特效" id="btn14"/>
+			</div>
+			<div id="card"></div>
+		</div>
+		<script type="text/javascript">
+			var box = document.getElementById('box');
+			var ul = document.getElementById('bgul');
+			var card = document.getElementById('card');
+			var btn1 = document.getElementById('btn1');
+			var btn2 = document.getElementById('btn2');
+			var btn3 = document.getElementById('btn3');
+			var btn4 = document.getElementById('btn4');
+			var btn5 = document.getElementById('btn5');
+			var btn6 = document.getElementById('btn6');
+			var btn7 = document.getElementById('btn7');
+			var btn8 = document.getElementById('btn8');
+			var btn9 = document.getElementById('btn9');
+			var btn10 = document.getElementById('btn10');
+			var btn11 = document.getElementById('btn11');
+			var btn12 = document.getElementById('btn12');
+			var btn13 = document.getElementById('btn13');
+			var btn14 = document.getElementById('btn14');
+			var divs = card.getElementsByTagName('div');
+			var ps = card.getElementsByTagName('p');
+			var h3s = card.getElementsByTagName('h3');
+			var lis = ul.getElementsByTagName('li');
+			var num = 1;
+			var timer = null;
+			var num2 = 0;
+			var onf = true;
+			var onf2 = true;
+			for(var i =0 ;i<40;i++){
+				ul.innerHTML += '<li></li>'
+				lis[i].style.backgroundPosition ='0 '+-i*16.75+'px';
+			}
+			for(var i=0;i<100;i++){
+				card.innerHTML += '<div></div>';
+			}
+			for(var i=0;i<5;i++){
+				card.innerHTML += '<h3></h3>';
+				h3s[i].style.display = 'none';
+			}
+			for(var i=0;i<7;i++){
+				card.innerHTML += '<p></p>';
+				ps[i].style.display = 'none';
+			}
+//			var timer2 = null;
+//			var disX = 0;
+//			var disY = 0;
+//			var prevX = 0;
+//			var prevY = 0;
+//			var iSpeedX = 0;
+//			var iSpeedY = 0;
+//			for(var i=0;i<divs.length;i++){
+//				startMovereng(divs[i]);
+//			}
+			for(var i=0;i<divs.length;i++){
+				divs[i].index = i;
+				divs[i].onclick = function(){
+					
+					for(var i=0;i<divs.length;i++){
+						divs[i].className = '';
+						divs[i].style.background = 'url(images/卡背1.jpg) no-repeat';
+						divs[i].style.backgroundSize = '100% 100%';
+						divs[i].style.transition = '3s';
+					}
+					divs[this.index].style.background = 'url(images/card'+Math.floor(randomFn(1,157))+'.png) no-repeat';
+					divs[this.index].style.backgroundSize = '100% 100%';
+					divs[this.index].className = 'active';
+				}
+			}
+			var t = new TimelineMax();
+			btn1.onclick = function(){
+				for(var i=0;i<7;i++){
+					ps[i].style.display = 'none';
+				}
+				for(var i=0;i<divs.length;i++){
+					divs[i].className = '';
+					divs[i].style.transition = 'none';
+					divs[i].style.background = 'url(images/卡背1.jpg) no-repeat';
+					divs[i].style.backgroundSize = '100% 100%';
+				}
+				for(var i=0;i<100;i++){
+					divs[i].style.background = 'url(images/卡背1.jpg) no-repeat';
+					divs[i].style.backgroundSize = '100% 100%';
+				}
+				t.staggerTo(divs,1,{
+					rotation : -45,
+					ease : Linear.easeInOut,
+					cycle : {
+						rotation : function(i){
+							return -45 + 0.9*i
+						},
+						x : function(j){
+							return -Math.cos(Math.PI/180 * 1.8 * j) * 250
+						},
+						y : function(z){
+							return -Math.sin(Math.PI/180 * 1.8 * z) * 250
+						},
+					}
+				},0.05)
+			}
+			btn2.onclick = function(){
+				for(var i=0;i<7;i++){
+					ps[i].style.display = 'none';
+				}
+				for(var i=0;i<divs.length;i++){
+					divs[i].className = '';
+					divs[i].style.transition = 'none';
+					divs[i].style.background = 'url(images/卡背1.jpg) no-repeat';
+					divs[i].style.backgroundSize = '100% 100%';
+				}
+				for(var i=0;i<100;i++){
+					divs[i].style.background = 'url(images/卡背2.jpg) no-repeat';
+					divs[i].style.backgroundSize = '100% 100%';
+				}
+				ease : Linear.easeInOut,
+				t.staggerTo(divs,2,{
+					cycle : {
+						rotation : function(){
+							return randomFn(-90,90)
+						},
+						x : function(){
+							return randomFn(-600,600)
+						},
+						y : function(){
+							return -220
+						},
+					},
+				},0.01)
+			}
+			btn3.onclick = function(){
+				for(var i=0;i<7;i++){
+					ps[i].style.display = 'none';
+				}
+				for(var i=0;i<divs.length;i++){
+					divs[i].className = '';
+					divs[i].style.transition = 'none';
+					divs[i].style.background = 'url(images/卡背1.jpg) no-repeat';
+					divs[i].style.backgroundSize = '100% 100%';
+				}
+				t.staggerTo(divs,1,{
+					rotation : 0,
+					cycle : {
+						rotation : function(){
+							return randomFn(-90,90)
+						},
+						x : function(){
+							return 0
+						},
+					},	
+					ease : Bounce.easeOut,
+
+				},0.01)
+			}
+			btn4.onclick = function(){
+				for(var i=0;i<7;i++){
+					ps[i].style.display = 'none';
+				}
+				for(var i=0;i<divs.length;i++){
+					divs[i].className = '';
+					divs[i].style.transition = 'none';
+					divs[i].style.background = 'url(images/卡背1.jpg) no-repeat';
+					divs[i].style.backgroundSize = '100% 100%';
+				}
+				for(var i=0;i<100;i++){
+					divs[i].style.background = 'url(images/卡背3.jpg) no-repeat';
+					divs[i].style.backgroundSize = '100% 100%';
+				}
+				ease : Linear.easeInOut,
+				t.staggerTo(divs,2,{
+					cycle : {
+						rotation : function(){
+							return randomFn(-90,90)
+						},
+						x : function(){
+							return randomFn(-680,700)
+						},
+						y : function(){
+							return randomFn(-220,180)
+						},
+					}
+				},0.01)
+			}
+			btn5.onclick = function(){
+				for(var i=0;i<7;i++){
+					ps[i].style.display = 'none';
+				}
+				for(var i=0;i<divs.length;i++){
+					divs[i].className = '';
+					divs[i].style.transition = 'none';
+					divs[i].style.background = 'url(images/卡背1.jpg) no-repeat';
+					divs[i].style.backgroundSize = '100% 100%';
+				}
+				t.staggerTo(divs,2,{
+					cycle : {
+						bezier : function(){
+						return [
+							{x:0,y:0},
+							{x:0,y:-100},
+							{x:200,y:0},
+							{x:0,y:100},
+							{x:-200,y:0},
+							{x:0,y:-50},
+							{x:100,y:0},
+							{x:0,y:50},
+							{x:-100,y:0},
+							{x:0,y:0},
+							]
+						}
+					}
+				},0.01)
+			}
+			btn6.onclick = function(){
+				for(var i=0;i<divs.length;i++){
+					divs[i].className = '';
+					divs[i].style.transition = 'none';
+					divs[i].style.background = 'url(images/卡背1.jpg) no-repeat';
+					divs[i].style.backgroundSize = '100% 100%';
+				}
+				if(onf){
+					for(var i=0;i<7;i++){
+						ps[i].style.display = 'none';
+					}
+					for(var i=0;i<5;i++){
+						h3s[i].style.display = 'block';
+					}
+					t.staggerTo(h3s,1,{
+						cycle : {
+							rotation : function(i){
+								return -90 + 45*i
+							},
+							x : function(j){
+								return -Math.cos(Math.PI/180 * 45 * j) * 250
+							},
+							y : function(z){
+								return -Math.sin(Math.PI/180 * 45 * z) * 250
+							},
+						},
+					},0.3)
+					t.staggerTo(h3s,1,{
+						cycle : {
+							rotationY : function(){
+								return -90
+							},
+						},
+						onComplete : function(){
+							this.target.style.background = 'url(images/card'+Math.floor(randomFn(1,157))+'.png) no-repeat';
+							this.target.style.backgroundSize = '100% 100%';
+							t.to(this.target,0.5,{
+								rotationY : 0,
+							})
+							onf = false;
+						},
+					},0.3)
+					
+				}
+				else{
+					for(var i=0;i<5;i++){
+						h3s[i].style.display = 'none';
+						h3s[i].style.background = 'url(images/卡背2.jpg) no-repeat';
+						h3s[i].style.backgroundSize='100% 100%';
+						h3s[i].style.top = '250px';
+						h3s[i].style.left = '710px';
+						h3s[i].style.transform = 'rotate(0deg)';
+					}
+					onf = true;
+				}
+			}
+			btn7.onclick = function(){
+				for(var i=0;i<divs.length;i++){
+					divs[i].className = '';
+					divs[i].style.transition = 'none';
+					divs[i].style.background = 'url(images/卡背1.jpg) no-repeat';
+					divs[i].style.backgroundSize = '100% 100%';
+				}
+				for(var i=0;i<7;i++){
+					ps[i].style.display = 'none';
+				}
+				for(var i=0;i<100;i++){
+					divs[i].style.background = 'url(images/卡背4.jpg) no-repeat';
+					divs[i].style.backgroundSize = '100% 100%';
+				}
+				t.staggerTo(divs,5,{
+					cycle : {
+						bezier : function(){
+						return [
+							{x:-580,y:-250},
+							{x:0,y:-200},
+							{x:580,y:-250},
+							{x:580,y:-200},
+							{x:0,y:-100},
+							{x:-580,y:-200},
+							{x:-580,y:-100},
+							{x:0,y:0},
+							{x:580,y:-100},
+							{x:580,y:0},
+							{x:0,y:100},
+							{x:-580,y:0},
+							{x:-580,y:100},
+							{x:0,y:0},
+							]
+						}
+					}
+				},0.01)
+			}
+			btn8.onclick = function(){
+				for(var i=0;i<divs.length;i++){
+					divs[i].className = '';
+					divs[i].style.transition = 'none';
+					divs[i].style.background = 'url(images/卡背1.jpg) no-repeat';
+					divs[i].style.backgroundSize = '100% 100%';
+				}
+				for(var i=0;i<7;i++){
+					ps[i].style.display = 'block';
+					ps[i].style.background = 'url(images/卡背5.jpg) no-repeat';
+					ps[i].style.backgroundSize='100% 100%';
+					ps[i].style.top = '250px';
+					ps[i].style.left = '710px';
+					ps[i].style.transform = 'rotate(0deg)';
+					ps[i].style.transition = '0.5s';
+				}
+				t.staggerTo(ps,0.5,{
+					cycle : {
+						rotation : function(i){
+							return 50*i
+						},
+						x : function(j){
+							return Math.cos(Math.PI/180 * 50 * j) * 200
+						},
+						y : function(z){
+							return Math.sin(Math.PI/180 * 50 * z) * 200
+						},
+					},
+				},0.1)
+			}
+			for(var i=0;i<7;i++){
+				ps[i].index = i;
+				ps[i].onclick = function(){
+					num2 = this.index;
+					shake(ps[num2],'left')
+					ps[num2].style.background = 'url(images/card'+Math.floor(randomFn(1,157))+'.png) no-repeat';
+					ps[num2].style.backgroundSize = '100% 100%';
+					ps[num2].style.transition = '2s';
+				}
+			}
+			btn9.onclick = function(){
+				for(var i=0;i<divs.length;i++){
+					divs[i].className = '';
+					divs[i].style.transition = 'none';
+					divs[i].style.background = 'url(images/卡背1.jpg) no-repeat';
+					divs[i].style.backgroundSize = '100% 100%';
+				}
+				for(var i=0;i<7;i++){
+					ps[i].style.display = 'none';
+				}
+				t.staggerTo(divs,1,{
+					cycle : {
+						rotation : function(){
+							return 0
+						},
+					}
+				},0.01)
+			}
+			btn10.onclick = function(){
+				for(var i=0;i<divs.length;i++){
+					divs[i].className = '';
+					divs[i].style.transition = 'none';
+					divs[i].style.background = 'url(images/卡背1.jpg) no-repeat';
+					divs[i].style.backgroundSize = '100% 100%';
+				}
+				for(var i=0;i<7;i++){
+					ps[i].style.display = 'none';
+				}
+				t.staggerTo(divs,1,{
+					rotation : 0,
+					ease : Linear.easeInOut,
+					cycle : {
+						rotation : function(){
+							return 1800
+						}
+					},	
+				},0.01)
+				
+				t.staggerTo(divs,1,{
+					rotation : 0,
+					ease : Linear.easeInOut,
+					cycle : {
+						rotation : function(){
+							return -1800
+						}
+					},	
+				},0.01)
+			}
+			num = 1;
+			num2 = 0;
+			var bgnum = 0;
+			var bgnum2 = 0;
+			var bgnum3 = 0;
+			var bgonf = 1;
+			btn11.onclick = function(){
+				for(var i=0;i<divs.length;i++){
+					divs[i].className = '';
+					divs[i].style.transition = 'none';
+					divs[i].style.background = 'url(images/卡背1.jpg) no-repeat';
+					divs[i].style.backgroundSize = '100% 100%';
+				}
+				if(bgonf === 0){
+					t.staggerTo("li",0.5,{
+						rotationX : 0,
+						rotationY : 90,
+						onComplete : function(){
+							this.target.style.background = 'url(images/bg.jpg) no-repeat';
+							this.target.style.backgroundSize = '100%';
+							this.target.style.backgroundPosition ='0 '+-18.75*bgnum+'px';
+							this.target.style.transform = "rotateY(0deg)";
+							this.target.style.transform = "rotateX(0deg)";
+							this.target.style.transition = "1s";
+							bgnum++;
+						},
+					},0.1)
+				}
+				if(bgonf === 1){
+					t.staggerTo("li",0.5,{
+						rotationY : 90,
+						rotationX : 0,
+						onComplete : function(){
+							this.target.style.background = 'url(images/bg2.jpg) no-repeat';
+							this.target.style.backgroundPosition ='0 '+-18.75*bgnum2+'px';
+							this.target.style.backgroundSize = '100%';
+							this.target.style.transform = "rotateY(0deg)";
+							this.target.style.transform = "rotateX(0deg)";
+							this.target.style.transition = "1s";
+							bgnum2++;
+						},
+					},0.1)
+				}
+				if(bgonf === 2){
+					t.staggerTo("li",0.5,{
+						rotationY : 90,
+						rotationX : 0,
+						onComplete : function(){
+							this.target.style.background = 'url(images/bg3.jpg) no-repeat';
+							this.target.style.backgroundPosition ='0 '+-18.5*bgnum3+'px';
+							this.target.style.transform = "rotateY(0deg)";
+							this.target.style.backgroundSize = '100%';
+							this.target.style.transform = "rotateX(0deg)";
+							this.target.style.transition = "1s";
+							bgnum3++;
+						},
+					},0.1)
+				}
+				bgonf++;
+				if(bgonf == 3){
+					bgonf = 0;
+				}
+				bgnum = 0;
+				bgnum2 = 0;
+				bgnum3 = 0;
+			}
+			btn12.onclick = function(){
+				for(var i=0;i<divs.length;i++){
+					divs[i].className = '';
+					divs[i].style.transition = 'none';
+					divs[i].style.background = 'url(images/卡背1.jpg) no-repeat';
+					divs[i].style.backgroundSize = '100% 100%';
+				}
+				for(var i=0;i<7;i++){
+					ps[i].style.display = 'none';
+				}
+				for(var i=0;i<100;i++){
+					divs[i].style.background = 'url(images/卡背1.jpg) no-repeat';
+					divs[i].style.backgroundSize = '100% 100%';
+				}
+				t.staggerTo(divs,1,{
+					rotation : -90,
+					ease : Linear.easeInOut,
+					cycle : {
+						rotation : function(i){
+							return -90 + 3.6*i
+						},
+						x : function(j){
+							return -Math.cos(Math.PI/180 * 3.6 * j) * 250
+						},
+						y : function(z){
+							return -Math.sin(Math.PI/180 * 3.6 * z) * 250
+						},
+					}
+				},0.05)
+			}
+			btn13.onclick = function(){
+				for(var i=0;i<divs.length;i++){
+					divs[i].className = '';
+					divs[i].style.transition = 'none';
+					divs[i].style.background = 'url(images/卡背1.jpg) no-repeat';
+					divs[i].style.backgroundSize = '100% 100%';
+				}
+				for(var i=0;i<7;i++){
+					ps[i].style.display = 'none';
+				}
+				for(var i=0;i<100;i++){
+					divs[i].style.background = 'url(images/卡背1.jpg) no-repeat';
+					divs[i].style.backgroundSize = '100% 100%';
+				}
+				t.staggerTo(divs,1,{
+					rotation : -90,
+					ease : Linear.easeInOut,
+					cycle : {
+						rotation : function(i){
+							return 90 - 3.6*i
+						},
+						x : function(j){
+							return -Math.cos(2*Math.PI/180 * 1.8 * j) * 250
+						},
+						y : function(z){
+							return Math.sin(2*Math.PI/180 * 1.8 * z) * 250
+						},
+					}
+				},0.05)
+			}
+			btn14.onclick = function(){
+				for(var i=0;i<divs.length;i++){
+					divs[i].className = '';
+					divs[i].style.transition = 'none';
+					divs[i].style.background = 'url(images/卡背1.jpg) no-repeat';
+					divs[i].style.backgroundSize = '100% 100%';
+				}
+				for(var i=0;i<7;i++){
+					ps[i].style.display = 'none';
+				}
+				for(var i=0;i<54;i++){
+					divs[i].style.background = 'url(images/卡背1.jpg) no-repeat';
+					divs[i].style.backgroundSize = '100% 100%';
+				}
+				t.staggerTo(divs,1,{
+					rotation : -90,
+					ease : Linear.easeInOut,
+					cycle : {
+						rotation : function(i){
+							return -90 + 6.666*i
+						},
+						x : function(j){
+							return -Math.cos(2*Math.PI/180 * 3.333 * j) * 2500
+						},
+						y : function(z){
+							return -Math.sin(2*Math.PI/180 * 3.333 * z) * 2500
+						},
+					}
+				},0.05)
+				t.staggerTo(divs,0.5,{
+					rotation : 0,
+					ease : Linear.easeInOut,
+					cycle : {
+						rotation : function(){
+							return 1800
+						}
+					},	
+				},0.01)
+				t.staggerTo(divs,1,{
+					rotation : -90,
+					ease : Linear.easeInOut,
+					cycle : {
+						rotation : function(i){
+							return 90 - 6.666*i
+						},
+						x : function(j){
+							return -Math.cos(2*Math.PI/180 * 3.333 * j) * 250
+						},
+						y : function(z){
+							return Math.sin(2*Math.PI/180 * 3.333 * z) * 250
+						},
+					}
+				},0.05)
+				t.staggerTo(divs,2,{
+					cycle : {
+						rotation : function(){
+							return randomFn(-90,90)
+						},
+						x : function(){
+							return randomFn(-680,700)
+						},
+						y : function(){
+							return randomFn(-220,180)
+						},
+					}
+				},0.01)
+				t.staggerTo(divs,1,{
+					rotation : 0,
+					cycle : {
+						rotation : function(){
+							return randomFn(-90,90)
+						},
+						x : function(){
+							return 0
+						},
+					},	
+					ease : Bounce.easeOut,
+
+				},0.01)
+				t.staggerTo(divs,1,{
+					cycle : {
+						rotation : function(){
+							return randomFn(-90,90)
+						},
+						x : function(){
+							return randomFn(-600,600)
+						},
+						y : function(){
+							return -220
+						},
+					},
+				},0.01)
+				t.staggerTo(divs,1,{
+					rotation : 0,
+					cycle : {
+						rotation : function(){
+							return randomFn(-90,90)
+						},
+						x : function(){
+							return 0
+						},
+					},	
+					ease : Bounce.easeOut,
+				},0.01)
+				t.staggerTo(divs,1,{
+					rotation : 0,
+					ease : Linear.easeInOut,
+					cycle : {
+						rotation : function(){
+							return 1800
+						}
+					},	
+				},0.01)
+				t.staggerTo(divs,1,{
+					rotation : -45,
+					ease : Linear.easeInOut,
+					cycle : {
+						rotation : function(i){
+							return -45 + 1.666666*i
+						},
+						x : function(j){
+							return -Math.cos(Math.PI/180 * 3.3333333 * j) * 250
+						},
+						y : function(z){
+							return -Math.sin(Math.PI/180 * 3.3333333 * z) * 250
+						},
+					}
+				},0.05)
+				t.staggerTo(divs,3,{
+					cycle : {
+						bezier : function(){
+						return [
+							{x:-580,y:-250},
+							{x:0,y:-200},
+							{x:580,y:-250},
+							{x:580,y:-200},
+							{x:0,y:-100},
+							{x:-580,y:-200},
+							{x:-580,y:-100},
+							{x:0,y:0},
+							{x:580,y:-100},
+							{x:580,y:0},
+							{x:0,y:100},
+							{x:-580,y:0},
+							{x:-580,y:100},
+							{x:0,y:0},
+							]
+						}
+					}
+				},0.01)
+				t.staggerTo(divs,1,{
+					cycle : {
+						rotation : function(){
+							return 0
+						},
+					}
+				},0.01)
+			}
+			
+			function randomFn (first,end){
+				return Math.random()*(end-first)+first;
+			}
+		</script>
+	</body>
+</html>
